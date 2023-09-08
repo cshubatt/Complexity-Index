@@ -1,4 +1,4 @@
-output/
+somefolder/*
 testing/
 .DS_Store
 .Rapp.history

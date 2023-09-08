@@ -1,2 +1,6 @@
 output/
 testing/
+.DS_Store
+.Rapp.history
+.Rhistory
+.Rprofile

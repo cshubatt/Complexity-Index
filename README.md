@@ -53,9 +53,9 @@ When $F_A(x)$ and $F_B(x)$ are the CDFs of Lottery A and B with EV(.) indicating
 
 $$log\Big( 1+\int_\mathbb{R} |F_A(x) - F_B(x)|dx - |EV(A) - EV(B)|\Big) $$
 
-<u>No dominance (`nodom`):**<br>
+<u>No dominance (`nodom`):</u><br>
 $$\exists x_1 , x_2: F_A(x_1) < F_B(x_1) \land F_A(x_2) >F_B(x_2)  $$
-**Average log payout magnitude (`ave_ln_scale`):</u><br>
+<u>Average log payout magnitude (`ave_ln_scale`):</u><br>
 $$log \Big( 1+ 0.5 (1/k_A\sum_{s=1}^{k_A}|x_s^A| +  1/k_B\sum_{s=1}^{k_B}|x_s^B|) \Big)$$
 <u>Average log number of states (`ave_ln_nstates`):</u><br>
 $$log(1 + \frac{k_A + k_B}{2})$$

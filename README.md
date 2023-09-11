@@ -8,7 +8,7 @@ Exploring the role of complexity for reasoning in choice problems. Provided are 
 - **OLC**: Objective Lottery Complexity
 - **SLC**: Subjective Lottery Complexity
 
-Depending on the Input, the tool calculates these indices and saves them in the `output' folder, including the necessary features to obtain these indices. 
+Depending on the Input, the tool calculates these indices and saves them in the `output` folder, including the necessary features to obtain these indices. 
 
 
 ## Input 

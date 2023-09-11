@@ -78,7 +78,7 @@ In the following, features are defined for both lotteries indicated with $j\in\{
 - <u>Log Variance (`ln_var_a/b`):</u><br>
 $$log\Big ( 1+  \sum_{s=1}^{k_j} p_s^j(x_i^j)^2 -( \sum_{s=1}^{k_j} p_s^jx_s^j)^2 \Big)$$
 
-- <u>Log payout magnitude (`ln_scale_a\b`):</u><BR>
+- <u>Log payout magnitude (`ln_scale_a/b`):</u><BR>
 $$log\Big( 1 + 1/k_j\sum_{s=1}^{k_j}|x_s^j|  \Big)$$
 
 		

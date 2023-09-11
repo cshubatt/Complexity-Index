@@ -387,6 +387,7 @@ df <- df %>%
 df <- cbind(df_fundamentals, df)
 
 write_csv(df, "output/index_calculated_R.csv")
+save(df, file = "output/index_calculated_R.RData")
 
 
 message("Done.")

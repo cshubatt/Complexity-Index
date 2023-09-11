@@ -7,17 +7,21 @@
 ****   Last updated: 25 Aug, 2024.                                                           * 
 **********************************************************************************************
 
+
+*SET WORKING DIRECTORY HERE:
+global root "/Users/sebastianredl/Dropbox (Harvard University)/ML_complexity/Complexity_Tool"
+
+
 *--------------Install Packages --------------* 
 
 *packages: ssc install project, mata, 
-
 ssc install egenmore, replace
 ssc install distinct, replace
 ssc install unique, replace
 ssc install estout, replace
 ssc install ftools, replace
 ssc install matsort, replace
-ssc install missing, replace
+ssc install missings, replace
 ssc install rangestat, replace
 ssc install matmap, replace
 
@@ -27,17 +31,12 @@ clear all
 frame create index_df
 frame change index_df
 
-*SET WORKING DIRECTORY HERE:
-global root "/Users/sebastianredl/Dropbox (Harvard University)/ML_complexity/Complexity_Tool"
-
 *--------------Loading Data--------------* 
 import delimited "$root/sample_data/sample_all_indices_calculation_1.csv", clear
 
 
 
 qui: destring *, ignore("NA") replace
-
-*keep problem x_* p_* compound
 
 *-----------------------------------------------------------
 *               Preparing and Checking Data 
@@ -255,7 +254,7 @@ forval row = 1(1)`N'{
 	}
 
 
-	*combinte cdfs
+	*combine cdfs
 	matrix cumu = m_a[1..., "cumu"] \ m_b[1..., "cumu"]
 	
 	*make mata compatible
@@ -361,6 +360,7 @@ gen double ave_ln_scale = (ln_scale_a + ln_scale_b) / 2
 gen double ln_nstates_a = ln(n_a + 1)
 gen double ln_nstates_b = ln(n_b + 1)
 gen double ave_ln_nstates = (ln_nstates_a + ln_nstates_b) /2
+drop n_a n_b
 
 
 *--------------Absolut expected value difference --------------* 
@@ -388,6 +388,8 @@ forval i = 1(1)$num_st_max{
 	
 replace ln_var_a = ln(ln_var_a - ev_a^2 + 1)
 replace ln_var_b = ln(ln_var_b - ev_b^2 + 1)
+
+drop ev_a ev_b
 
 count
 global obs_n = r(N)
@@ -516,21 +518,86 @@ local indices_name `index'
 }
 
 
-*-------------- Save dataframe --------------* 
-local keep_features x_a* p_a_* x_b* p_b*  `indices' `features_pc' /// 
-`features_ac' `features_lc_a' `features_lc_b'
+
+*---------------Labeling drop variables----------------------*
+
+label var compound "1 if compound prob."
+label var abs_ev_diff "Absolute difference in expected values"
+label var abs_ev_diff_sq "Absolute difference in expected values sq."
+label var ln_cdf_diff_abs "Log excess dissimilarity"
+label var ave_ln_scale "Average log payout magnitude"
+label var ave_ln_nstates "Average log number of states"
+label var ave_not_gains "Frac. lotteries involving loss"
+label var nodom "No dominance"
+
+order x_a* p_a* x_b* p_b* `inidices' `features_pc' `features_ac' `features_lc_a' ///
+ `features_lc_b'
+capture confirm variable problem 
+if (_rc ==0){
+	order problem x_a* p_a* x_b* p_b* `indices'
+	label var problem "Problem ID"
+}
+
 
 if ("$indices_sel" == "LC"){
+	drop `features_pc' `features_ac' `features_lc_b' cor_* x_b* p_b* id
 	local keep_features x_a* p_a_* `indices' `features_lc_a'
+	label var OLC_a "Objective Lottery Complexity"
+	label var SLC_a "Subjective Lottery Complexity"
+	label var ln_var_a "Log variance"
+	label var ln_scale_a "Log payout magnitude"
+	label var ln_nstates_a "Log number of states"
+	label var not_gains_a "1 if involves loss"
+	forval i = 1(1)$num_st_max{
+	label var x_a_`i' "Payout of state `i'"
+	label var p_a_`i' "Probability for state `i'"
+	}
+	rename ln_var_a ln_variance_a
+	rename ln_scale_a ln_payout_magn_a
+	rename ln_nstates_a ln_num_numstates_a
+	rename not_gains_a involves_loss_a
 }
-
-capture confirm variable problem
-if (_rc ==0){
-	local keep_features problem `keep_features'
+else{
+	drop cor_* id
+	label var OPC "Objective Problem Complexity"
+	label var SPC "Subjective Problem Complexity"
+	label var OAC "Objective Aggregation Complexity"
+	label var SAC "Subjective Aggregation Complexity"
+	label var OLC_a "Objective Lottery Complexity of Lottery A"
+	label var SLC_a "Subjective Lottery Complexity of Lottery A"
+	label var OLC_b "Objective Lottery Complexity of Lottery B"
+	label var SLC_b "Subjective Lottery Complexity of Lottery B"
+	label var ln_var_a "Log variance of Lottery A"
+	label var ln_scale_a "Log payout magnitude of Lottery A"
+	label var ln_nstates_a "Log number of states of Lottery A"
+	label var not_gains_a "1 if involves loss of Lottery A"
+	label var ln_var_b "Log variance of Lottery B"
+	label var ln_scale_b "Log payout magnitude of Lottery B"
+	label var ln_nstates_b "Log number of states of Lottery B"
+	label var not_gains_b "1 if involves loss of Lottery B"
+	foreach lot in a b{
+		forval i = 1(1)$num_st_max{
+			label var x_`lot'_`i' "Lottery `lot' payout of state `i'"
+			label var p_`lot'_`i' "Lottery `lot' probability for state `i'"
+		}
+	}
+	rename ln_cdf_diff_abs ln_excess_dissimilarity
+	rename ln_var_a ln_variance_a
+	rename ln_var_b ln_variance_b
+	rename ln_scale_a ln_payout_magn_a
+	rename ln_scale_b ln_payout_magn_b
+	rename ln_nstates_a ln_num_numstates_a
+	rename ln_nstates_a ln_num_numstates_b
+	rename not_gains_a involves_loss_a
+	rename not_gains_b involves_loss_b
 	
+
+rename ave_ln_scale ave_ln_payout_magn_a
+label var ave_ln_nstates ave_ln_num_numstates_a
+label var ave_not_gains "Frac. lotteries involving loss"
+label var nodom "No dominance"
 }
 
-keep `keep_features'
 
 *drop added states and probabilities with just NA
 
@@ -540,6 +607,22 @@ foreach var of varlist _all {
         drop `var'
      }
  }
+ 
+capture assert compound == 0
+if _rc == 0 drop `v'
+ 
+if ("$indices_sel" == "LC"){
+	rename *_a *
+	rename *_a_* *_*
+}
+else{
+
+}
+
+
+ 
+ 
+*-------------- Save dataframe --------------* 
 
 save "$root/output/index_calculated_stata.dta", replace
 export delimited "$root/output/index_calculated_stata.csv", replace

@@ -56,11 +56,11 @@ $$log\Big( 1+\int_\mathbb{R} |F_A(x) - F_B(x)|dx - |EV(A) - EV(B)|\Big) $$
 - <u>No dominance (`nodom`):</u><br>
 $$\exists x_1 , x_2: F_A(x_1) < F_B(x_1) \land F_A(x_2) >F_B(x_2)  $$
 - <u>Average log payout magnitude (`ave_ln_scale`):</u><br>
-$$log \Big( 1+ 0.5 (1/k_A\sum_{s=1}^{k_A}|x_s^A| +  1/k_B\sum_{s=1}^{k_B}|x_s^B|) \Big)$$
+$$\Big [ log \Big(1+  1/k_A\sum_{s=1}^{k_A}|x_s^A| \Big) + log \Big (1 + 1/k_B\sum_{s=1}^{k_B}|x_s^B|) \Big) \Big ] /2$$
 - <u>Average log number of states (`ave_ln_nstates`):</u><br>
-$$log(1 + \frac{k_A + k_B}{2})$$
+$$\frac{log(1 + k_A) + log(1 + k_B)}{2}$$
 - <u>Frac. lotteries involving loss (`ave_not_gains`)</u><br>
-- <u>If one lottery choice is compound (according to definition [above](###Compound))**<br>
+- <u>If one lottery choice is compound (according to definition [above](###Compound))</u><br>
 - <u>Absolute expected value difference (`abs_ev_diff`):</u><br>
 $$|EV(A) - EV(B)|$$
 - <u>Absolute expected value difference squared (`abs_ev_diff_sq`):</u><br>

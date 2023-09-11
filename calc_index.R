@@ -8,6 +8,7 @@
 install.packages("renv")
 library(renv)
 renv::restore()
+renv::activate()
 
 library("tidyverse")
 library("glue")

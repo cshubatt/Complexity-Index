@@ -11,6 +11,17 @@
 
 *packages: ssc install project, mata, 
 
+ssc install egenmore, replace
+ssc install distinct, replace
+ssc install unique, replace
+ssc install estout, replace
+ssc install ftools, replace
+ssc install matsort, replace
+ssc install missing, replace
+ssc install rangestat, replace
+ssc install matmap, replace
+
+
 clear all
 
 frame create index_df
@@ -20,28 +31,17 @@ frame change index_df
 global root "/Users/sebastianredl/Dropbox (Harvard University)/ML_complexity/Complexity_Tool"
 
 *--------------Loading Data--------------* 
-import delimited "$root/Complexity_Tool/sample_data/sample_all_indices_calculation_2.csv", clear
+import delimited "$root/sample_data/sample_all_indices_calculation_1.csv", clear
 
-drop x_a_6 x_a_7 p_a_6 p_a_7 
 
-rename x_a_4 x_a_6
-rename x_a_5 x_a_7
-rename p_a_4 p_a_6
-rename p_a_5 p_a_7
-keep if nstates__a < 6 
 
 qui: destring *, ignore("NA") replace
 
-*test everything with less columns!
-*calculate everything for safe payments!
-*sort if safe payment is on the right sight 
-keep problem x_a* p_a* compound
+*keep problem x_* p_* compound
 
 *-----------------------------------------------------------
 *               Preparing and Checking Data 
 *-----------------------------------------------------------
-
-local wanted r(varlist)
 
 *Missing columns per state and probability columns in each lottery
 local x_a_n = 0
@@ -56,7 +56,11 @@ global num_st_max = 7
 *Indicates which inidices can be calculated out of the supplied data
 global indices_sel PC
 
+
+
+
 capture describe x_* p_*
+
 	if (_rc == 0){
 		di "Checking if more than one lotterie in the data set in order to calculate OPC/SPC/OAC/SAC"
 		capture describe x_a_* p_a_* x_b_* p_b_*
@@ -70,7 +74,8 @@ capture describe x_* p_*
 			*transfrom data set in the x_a_ and x_b format! 
 				capture confirm variable x_`i'
 				if (_rc ==0){
-					gen x_a_`i' = x_`i'	
+					rename x_`i' x_a_`i' 	
+					rename p_`i' p_a_`i'	
 				}
 			}
 		gen x_b_1 = 0
@@ -416,7 +421,7 @@ if ("$indices_sel" == "LC"){
 frame create coef
 frame change coef
 clear
-import delimited "$root/Complexity_Tool/coef/all_coef.csv"
+import delimited "$root/coef/all_coef.csv"
 destring, replace
 
 *iterate over indicies, select correct features and calculate convex
@@ -536,8 +541,8 @@ foreach var of varlist _all {
      }
  }
 
-save "$root/Complexity_Tool/output/index_calculated_stata.dta", replace
-export delimited "$root/Complexity_Tool/output/index_calculated_stata.csv", replace
+save "$root/output/index_calculated_stata.dta", replace
+export delimited "$root/output/index_calculated_stata.csv", replace
 
 *---------------------   End of file  ---------------------*
 

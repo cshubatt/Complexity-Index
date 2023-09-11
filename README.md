@@ -48,22 +48,22 @@ The features for each index are the following. Please see `Section 4` for the de
 Consider a choice between two lotteries indexed by $j$ and denoted by letters $A$ and $B$. Each lottery is characterized by payout probabilities $(p_1^j,...p^j_{k_j})$ and payoff $(x_1^j,...x^j_{k_j})$ where $k_j$ denotes the number of distinct payout states of lottery $j$.
 
 #### Features of `OPC` and `SPC`
-<u>Log excess dissimilarity (`ln_cdf_diff_abs`):</u><br>
+<ins>Log excess dissimilarity (`ln_cdf_diff_abs`):</ins><br>
 When $F_A(x)$ and $F_B(x)$ are the CDFs of Lottery A and B with EV(.) indicating the expected value of a lottery then *Log excess dissimilarity* is defined as 
 
 $$log\Big( 1+\int_\mathbb{R} |F_A(x) - F_B(x)|dx - |EV(A) - EV(B)|\Big) $$
 
-<u>No dominance (`nodom`):</u><br>
+<ins>No dominance (`nodom`):</ins><br>
 $$\exists x_1 , x_2: F_A(x_1) < F_B(x_1) \land F_A(x_2) >F_B(x_2)  $$
-<u>Average log payout magnitude (`ave_ln_scale`):</u><br>
+<ins>Average log payout magnitude (`ave_ln_scale`):</ins><br>
 $$log \Big( 1+ 0.5 (1/k_A\sum_{s=1}^{k_A}|x_s^A| +  1/k_B\sum_{s=1}^{k_B}|x_s^B|) \Big)$$
-<u>Average log number of states (`ave_ln_nstates`):</u><br>
+<ins>Average log number of states (`ave_ln_nstates`):</ins><br>
 $$log(1 + \frac{k_A + k_B}{2})$$
-<u>Frac. lotteries involving loss (`ave_not_gains`)</u><br>
-<u>If one lottery choice is compound (according to definition [above](###Compound))**<br>
-<u>Absolute expected value difference (`abs_ev_diff`):</u><br>
+<ins>Frac. lotteries involving loss (`ave_not_gains`)</ins><br>
+<ins>If one lottery choice is compound (according to definition [above](###Compound))**<br>
+<ins>Absolute expected value difference (`abs_ev_diff`):</ins><br>
 $$|EV(A) - EV(B)|$$
-<u>Absolute expected value difference squared (`abs_ev_diff_sq`):</u><br>
+<ins>Absolute expected value difference squared (`abs_ev_diff_sq`):</ins><br>
 $$|EV(A) - EV(B)|^2$$
 
 #### Features of `OAC` and `SAC`
@@ -75,20 +75,20 @@ If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC).
 #### Features of `OLC_a/b` and `SLC_a/b`
 In the following, features are defined for both lotteries indicated with $j\in\{A,B\}$.<br>
 
-<u>Log Variance (`ln_var_a/b`):</u><br>
+<ins>Log Variance (`ln_var_a/b`):</ins><br>
 $$log\Big ( 1+  \sum_{s=1}^{k_j} p_s^j(x_i^j)^2 -( \sum_{s=1}^{k_j} p_s^jx_s^j)^2 \Big)$$
 
-<u>Log payout magnitude (`ln_scale_a\b`):</u><BR>
+<ins>Log payout magnitude (`ln_scale_a\b`):</ins><BR>
 $$log\Big( 1 + 1/k_j\sum_{s=1}^{k_j}|x_s^j|  \Big)$$
 
 		
 
-<u>Log number of states (`ln_nstates_a/b`):</u><br>
+<ins>Log number of states (`ln_nstates_a/b`):</ins><br>
 
 $$ log \Big ( 1 + k_j \Big )$$
 
-<u>1 if involves loss (`not_gains_a/b`)</u><br>
-<u>1 if involves compound probability(`compound`)</u><br> 
+<ins>1 if involves loss (`not_gains_a/b`)</ins><br>
+<ins>1 if involves compound probability(`compound`)</ins><br> 
 
 
 

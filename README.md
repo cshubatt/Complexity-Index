@@ -41,12 +41,15 @@ The results are saved in `output` with `index_calculated_R.csv` or `index_calcul
 
 ### Choice Complexity
 If two lotteries are supplied as above, all 6 indices are automatically calculated. The results are ordered in the CSV as follows: Problem [Optional] | Supplied probabilities and payouts | OPC | SPC | OAC | SAC | OLC_a | SLC_a |  OLC_a | SLC_a | and then in the same order of the indices the necessary features for their calculations|. _a, _b of for OLC and SLC indicates to which lottery the complexity index is referring too. 
+
+MATHEMATICAL DEFINITIONS OF FEATURES 
+
 ### Lottery Complexity
 If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the **Choice Complexity** output. However, _a as a working labelling is introduced when lottery states and probabilities are supplied with labelling **x_1, x_2, ... p_1, p_2**. Additionally, the indices have the appendix _a referring to these lottery fundamentals. 
 
 ## Running the R Script
 RENV
-### Running the Stata Script
+## Running the Stata Script
 ROOT
 
 

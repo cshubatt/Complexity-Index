@@ -11,6 +11,17 @@
 
 *packages: ssc install project, mata, 
 
+ssc install egenmore, replace
+ssc install distinct, replace
+ssc install unique, replace
+ssc install estout, replace
+ssc install ftools, replace
+ssc install matsort, replace
+ssc install missing, replace
+ssc install rangestat, replace
+ssc install matmap, replace
+
+
 clear all
 
 frame create index_df

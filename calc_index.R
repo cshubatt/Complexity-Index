@@ -2,15 +2,18 @@
 # Purpose: Calculated Complexity Indices of Choice Problems and Lotteries
 # Author: Benjamin Enke & Cassidy Shubatt
 # Output: CSV File with Indices and Features
-# Last updated: 8 Sept, 2023 by Sebasitan Redl
+# Last updated: 11 Sept, 2023 by Sebasitan Redl
 # -----------------------------------------------------------------------------
 
-install.packages("renv")
-library(renv)
-script_dir <- dirname(rstudioapi::getSourceEditorContext()$path)
-setwd(script_dir) #or set path for wokring directory manually
-renv::restore()
-renv::activate()
+#Load package environment and set directory in R Console:
+if(FALSE){
+  install.packages("renv")
+  library(renv)
+  script_dir <- dirname(rstudioapi::getSourceEditorContext()$path)
+  setwd(script_dir) #or set path for working directory manually
+  renv::restore()
+  renv::activate()
+}
 
 library("tidyverse")
 library("glue")
@@ -264,7 +267,7 @@ for (i in 1:num_st_max) {
 # ------------------------------------------------------------------------------
 #              Generating complexity index using features
 # ------------------------------------------------------------------------------
-
+message("Calculating Complexity Indices")
 df <- df %>%
   rename_with(~gsub("(__ab)", "", .), matches("(__ab)")) %>% 
   rename_with(~gsub("(__a)", "_a", .), matches("(__a)")) %>% 

@@ -59,8 +59,8 @@ $$\exists x_1 , x_2: F_A(x_1) < F_B(x_1) \land F_A(x_2) >F_B(x_2)  $$
 $$log \Big( 1+ 0.5 (1/k_A\sum_{s=1}^{k_A}|x_s^A| +  1/k_B\sum_{s=1}^{k_B}|x_s^B|) \Big)$$
 <u>Average log number of states (`ave_ln_nstates`):</u><br>
 $$log(1 + \frac{k_A + k_B}{2})$$
-**Frac. lotteries involving loss (`ave_not_gains`)</u><br>
-**If one lottery choice is compound (according to definition [above](###Compound))**<br>
+<u>Frac. lotteries involving loss (`ave_not_gains`)</u><br>
+<u>If one lottery choice is compound (according to definition [above](###Compound))**<br>
 <u>Absolute expected value difference (`abs_ev_diff`):</u><br>
 $$|EV(A) - EV(B)|$$
 <u>Absolute expected value difference squared (`abs_ev_diff_sq`):</u><br>

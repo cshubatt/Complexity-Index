@@ -7,6 +7,8 @@
 
 install.packages("renv")
 library(renv)
+script_dir <- dirname(rstudioapi::getSourceEditorContext()$path)
+setwd(script_dir) #or set path for wokring directory manually
 renv::restore()
 renv::activate()
 

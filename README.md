@@ -66,13 +66,13 @@ $$|EV(A) - EV(B)|$$
 **Absolute expected value difference squared (`abs_ev_diff_sq`)**:<br>
 $$|EV(A) - EV(B)|^2$$
 
-### Features of `OAC` and `SAC`
+#### Features of `OAC` and `SAC`
 As above but without `abs_ev_diff` and `abs_ev_diff_sq` features.
 
 ### Lottery Complexity
 If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the [Choice Complexity](###ChoiceComplexity) output. However, `_a` as a working labelling is introduced when lottery states and probabilities are supplied with labelling **x_1, x_2, ... p_1, p_2**. Additionally, the indices have the appendix _a referring to these lottery fundamentals. 
 
-### Features of `OLC_a/b` and `SLC_a/b`
+#### Features of `OLC_a/b` and `SLC_a/b`
 In the following, features are defined for both lotteries indicated with $j\in\{A,B\}$.<br>
 
 **Log Variance (`ln_var_a/b`):**<br>

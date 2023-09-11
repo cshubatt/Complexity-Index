@@ -48,7 +48,9 @@ MATHEMATICAL DEFINITIONS OF FEATURES
 If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the **Choice Complexity** output. However, _a as a working labelling is introduced when lottery states and probabilities are supplied with labelling **x_1, x_2, ... p_1, p_2**. Additionally, the indices have the appendix _a referring to these lottery fundamentals. 
 
 ## Running the R Script
-RENV
+
+The R Script `calc_index.R` should be able to run using the isolated environment stored in `renv`. In order to activate this environment, you will first need to ensure that `R` and the package `renv` are installed on your machine. In the R console, navigate to the project directory and run `renv::restore()`, to automatically install all required packages by using the `renv.lock` file. Then calling `renv::activate()` should be all you need to do to be ready to run the R code. All necessary code to activate your package environment can be found at the beginning of `calc_index.R`. 
+
 ## Running the Stata Script
 ROOT
 

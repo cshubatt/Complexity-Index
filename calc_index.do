@@ -32,7 +32,7 @@ frame create index_df
 frame change index_df
 
 *--------------Loading Data--------------* 
-import delimited "$root/sample_data/sample_all_indices_calculation_1.csv", clear
+import delimited "$root/sample_data/sample_just_OLC_SLC_calculation_2.csv", clear
 
 
 
@@ -527,14 +527,15 @@ label var abs_ev_diff_sq "Absolute difference in expected values sq."
 label var ln_cdf_diff_abs "Log excess dissimilarity"
 label var ave_ln_scale "Average log payout magnitude"
 label var ave_ln_nstates "Average log number of states"
-label var ave_not_gains "Frac. lotteries involving loss"
-label var nodom "No dominance"
+label var ave_not_gains "Fraction of lotteries involving loss"
+label var nodom "No dominance relationship"
 
-order x_a* p_a* x_b* p_b* `inidices' `features_pc' `features_ac' `features_lc_a' ///
+order x_a* p_a* x_b* p_b* `indices' `features_pc' `features_ac' `features_lc_a' ///
  `features_lc_b'
 capture confirm variable problem 
 if (_rc ==0){
-	order problem x_a* p_a* x_b* p_b* `indices'
+	order problem x_a* p_a* x_b* p_b* `indices' `features_pc' `features_ac' `features_lc_a' ///
+ `features_lc_b'
 	label var problem "Problem ID"
 }
 
@@ -554,7 +555,7 @@ if ("$indices_sel" == "LC"){
 	}
 	rename ln_var_a ln_variance_a
 	rename ln_scale_a ln_payout_magn_a
-	rename ln_nstates_a ln_num_numstates_a
+	rename ln_nstates_a ln_num_states_a
 	rename not_gains_a involves_loss_a
 }
 else{
@@ -584,18 +585,16 @@ else{
 	rename ln_cdf_diff_abs ln_excess_dissimilarity
 	rename ln_var_a ln_variance_a
 	rename ln_var_b ln_variance_b
+	rename ave_ln_scale ave_ln_payout_magn
 	rename ln_scale_a ln_payout_magn_a
 	rename ln_scale_b ln_payout_magn_b
-	rename ln_nstates_a ln_num_numstates_a
-	rename ln_nstates_a ln_num_numstates_b
+	rename ave_ln_nstates ave_ln_num_states_a
+	rename ln_nstates_a ln_num_states_a
+	rename ln_nstates_b ln_num_states_b
+	rename ave_not_gains frac_involves_losses
 	rename not_gains_a involves_loss_a
 	rename not_gains_b involves_loss_b
-	
-
-rename ave_ln_scale ave_ln_payout_magn_a
-label var ave_ln_nstates ave_ln_num_numstates_a
-label var ave_not_gains "Frac. lotteries involving loss"
-label var nodom "No dominance"
+	rename nodom no_dominace
 }
 
 
@@ -609,7 +608,7 @@ foreach var of varlist _all {
  }
  
 capture assert compound == 0
-if _rc == 0 drop `v'
+if _rc == 0 drop compound
  
 if ("$indices_sel" == "LC"){
 	rename *_a *

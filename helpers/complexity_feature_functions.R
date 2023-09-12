@@ -93,9 +93,8 @@ build_features <- function(df, incl_tiles = FALSE, lots = c("a", "b")){
         for (feat in card_feats) {
           feat_i <- glue("{feat}__{lot_i}{lot_j}")
           log_i <- glue("ln_{feat_i}")
-          sq_i <- glue("sq_{feat_i}")
           df[[log_i]] <- log(df[[feat_i]] + 1)
-          df[[sq_i]] <- df[[feat_i]]^2
+
         }
       }
     }
@@ -118,21 +117,17 @@ build_features <- function(df, incl_tiles = FALSE, lots = c("a", "b")){
       x_i, p_i, ~var_lottery(xs = .x, probs = .y)
     ) %>% unlist
     
-    df[[glue("range__{lot_i}")]] <- map(
-      x_i, ~x_range(xs = .x)
-    ) %>% unlist
+
     
     df[[glue("nstates__{lot_i}")]] <- map(
       x_i, ~num_states(xs = .x)
     ) %>% unlist
     
-    df[[glue("certain__{lot_i}")]] <- map(
-      .x = p_i, ~any_certain(probs = .x)
-    ) %>% unlist
+
     
     # add log, square versions of cardinal features ----------------------------
     card_feats <- c(
-      "scale", "range", "var",
+      "scale", "var",
       "nstates"
     )
     
@@ -141,14 +136,13 @@ build_features <- function(df, incl_tiles = FALSE, lots = c("a", "b")){
       sq_i <- glue("sq_{feat}__{lot_i}")
       feat_i <- glue("{feat}__{lot_i}")
       df[[log_i]] <- log(abs(df[[feat_i]]) + 1)
-      df[[sq_i]] <- df[[feat_i]] ^2
     }
   }
   
   # add aves of feat_i, feat_j -------------------------------------------------
   ave_feats <- c(
-    card_feats, glue("ln_{card_feats}"), glue("sq_{card_feats}"),
-    "gains", "evil_probs"
+    card_feats, glue("ln_{card_feats}"),
+    "gains"
   )
   lot_i <- lots[1]
   lot_j <- lots[2]

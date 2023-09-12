@@ -32,7 +32,7 @@ frame create index_df
 frame change index_df
 
 *--------------Loading Data--------------* 
-import delimited "$root/sample_data/sample_all_indices_calculation_1.csv", clear
+import delimited "$root/sample_data/sample_just_OLC_SLC_calculation_2.csv", clear
 
 
 
@@ -530,11 +530,12 @@ label var ave_ln_nstates "Average log number of states"
 label var ave_not_gains "Fraction of lotteries involving loss"
 label var nodom "No dominance relationship"
 
-order x_a* p_a* x_b* p_b* `inidices' `features_pc' `features_ac' `features_lc_a' ///
+order x_a* p_a* x_b* p_b* `indices' `features_pc' `features_ac' `features_lc_a' ///
  `features_lc_b'
 capture confirm variable problem 
 if (_rc ==0){
-	order problem x_a* p_a* x_b* p_b* `indices'
+	order problem x_a* p_a* x_b* p_b* `indices' `features_pc' `features_ac' `features_lc_a' ///
+ `features_lc_b'
 	label var problem "Problem ID"
 }
 

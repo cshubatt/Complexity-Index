@@ -30,7 +30,7 @@ message("Loading features and response...")
 
 util <- modules::use("helpers/util.R")
 compl <- modules::use("helpers/complexity_feature_functions.R")
-df <- read.csv("sample_data/sample_all_indices_calculation_2.csv")
+df <- read.csv("sample_data/sample_just_OLC_SLC_calculation_1.csv")
 
 #which indices will be calculated
 indices <- "PC"
@@ -39,8 +39,17 @@ indices <- "PC"
 char_columns <- sapply(df, is.character)
 df[char_columns] <- lapply(df[char_columns], function(x) ifelse(x == "", NA, x))
 
-#make dataframe numeric
-df[] <- lapply(df, as.numeric)
+#<ake dataframe numeric
+# Identify columns with mostly numeric values
+numeric_columns <- sapply(df, function(col) {
+  all(grepl("^\\d*\\.?\\d+$", col, perl = TRUE))  # Check if all entries are numeric
+})
+
+# Convert identified numeric columns to numeric
+df[, numeric_columns] <- lapply(df[, numeric_columns], as.numeric)
+
+#safe for later 
+df_fundamentals <- df
 
 #max numer of states
 num_st_max <- 7
@@ -126,18 +135,10 @@ reorder_row <- function(row) {
 
 order_c <- c(x_a_c, p_a_c, x_b_c, p_b_c)
 
-if("problem" %in% names(df)){
-  order_c<- c("problem", order_c)
-}
 
-#saving lottery fundamentals for later
-df_fundamentals <- df[order_c]
+
 if (indices == "LC"){
   order_lc <- c(x_a_c, p_a_c)
-  if("problem" %in% names(df)){
-    order_lc <- c("problem", order_lc)
-  }
-  df_fundamentals <- df[order_c]
 }
 
 compound <- FALSE
@@ -145,7 +146,9 @@ df_compound <- data.frame()
 if("compound" %in% names(df)){
   compound <- TRUE
   df_compound <- df %>% select(compound)
+  other_columns
 }
+
 df <- df %>% 
   select(all_of(order_c))
 
@@ -374,17 +377,82 @@ for (index in calc_indices) {
 
 # Save  -----------------------------------------------------------
 
-# Construct features -----------------------------------------------------------
+# Renaming and Rearranging -----------------------------------------------------------
 keep_features <- union(c(calc_indices, features_pc, features_ac), c(features_lc_a, features_lc_b))
+drop <- c("x_a", "x_b","p_a", "p_b", "ev_a", "ev_b", "ev_diff", "dom",
+          "mixed_a", "gains_a","mixed_a", "gains_a", "var_a", "var_b", "scale_a",
+          "scale_b", "nstates_a",  "nstates_b", "mixed_b", "gains_b", "ave_scale",
+          "ave_var", "cdf_diff_abs", "ave_nstates", "ave_ln_var", "ave_gains")
+  
+
 
 if (indices == "LC"){
   keep_features <- c(calc_indices, features_lc_a)
+  df <- df %>% 
+  select(all_of(keep_features)) %>% 
+    rename(
+      ln_variance = ln_var_a,
+      ln_payout_magn = ln_scale_a,
+      ln_num_states = ln_nstates_a,
+      involves_loss = not_gains_a
+    ) 
+  
+}else{
+  df <- df %>% 
+  select(all_of(keep_features)) %>% 
+    rename(
+      ln_excess_dissimilarity = ln_cdf_diff_abs,
+      ln_variance_a = ln_var_a,
+      ln_variance_b = ln_var_b,
+      ave_ln_payout_magn = ave_ln_scale,
+      ln_payout_magn_a = ln_scale_a,
+      ln_payout_magn_b = ln_scale_b,
+      ave_ln_num_states_a = ave_ln_nstates,
+      ln_num_states_a = ln_nstates_a,
+      ln_num_states_b = ln_nstates_b,
+      frac_involves_losses = ave_not_gains,
+      involves_loss_a = not_gains_a,
+      involves_loss_b = not_gains_b,
+      no_dominace = nodom
+    ) 
 }
 
-df <- df %>% 
-  select( all_of(keep_features))
+#remove compound if not originally there
+if("compound" %in% names(df_fundamentals)){
+  df_fundamentals <- df_fundamentals %>% 
+    select(-compound)
+}
 
-df <- cbind(df_fundamentals, df)
+
+#add indices and features to original data
+df <- cbind(df, df_fundamentals)
+
+# Filter elements that start with "x_" or "p_"
+order_c <- names(df)[grep("^(x_|p_)", names(df))]
+
+if("problem" %in% names(df)){
+  order_c <- c("problem", order_c)
+}
+
+other_columns_diff <- setdiff(names(df), c(order_c, calc_indices))
+
+df <- df[, c(order_c, calc_indices, other_columns_diff)]
+
+
+if (indices == "LC"){
+  colnames(df) <- gsub("_a_", "_", colnames(df))
+  colnames(df) <- gsub("_b_", "_", colnames(df))
+  colnames(df) <- gsub("_a", "", colnames(df))
+}
+
+#remove compound features when not originally in the data
+if (!compound){
+  df <- df %>% 
+    select(-compound)
+}
+
+#drop col when just NA 
+df <- df[, colSums(is.na(df)) < nrow(df)]
 
 write_csv(df, "output/index_calculated_R.csv")
 save(df, file = "output/index_calculated_R.RData")

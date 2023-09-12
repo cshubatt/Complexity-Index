@@ -5,3 +5,4 @@ testing/
 .Rhistory
 .Rprofile
 .gitgnore
+*.stswp

@@ -19,7 +19,7 @@ The code automatically recognizes the number of lotteries in the input data and 
 - Problem ID is optional and should be indicated by the column name `problem`.
 - CSV format 
 - Not existing probabilities and states can be indicated by `,"",`, `,"NA",` or `,,` 
-- Additional columns can be in the input data and will not be manipulated by code, as long as it does not match the patter `x_`, `p_`, `_a_`, `_a` and `cor_`
+- Additional columns can be in the input data and will not be manipulated by code, as long as it does not match the pattern `x_`, `p_`, `_a_`, `_a`, `_b_`, `_b` and `cor_`
 
 ### Choice Complexity
 If two lotteries are supplied, the column names should be as displayed in the table below. In the columns,*_a_*/*_b_* should indicate the two different lotteries and the number **i** payout x_a_**i** to probability p_a_**i** which can be up to **i = 7 ** (or fewer columns). Each state has to match a probability. Also, see sample `sample_all_indices_calculation_1.csv` or `sample_all_indices_calculation_2.csv` in the `sample_data` folder for an example of a correct input format.
@@ -71,10 +71,10 @@ $$|EV(A) - EV(B)|^2$$
 As above but without `abs_ev_diff` and `abs_ev_diff_sq` features.
 
 ### Lottery Complexity
-If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the [Choice Complexity](###ChoiceComplexity) output. However, payouts and probabilities are now named **x_1, x_2, ... p_1, p_2**. Additionally, the features and indicies don't have the appendix `_a` as just one lottery is in the dataset.
+If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the [Choice Complexity](###ChoiceComplexity) output. However, payouts and probabilities are now named **x_1, x_2, ... p_1, p_2**. Additionally, the features and indices don't have the appendix `_a` as just one lottery is in the dataset.
 
 #### Features of `OLC_a/b` and `SLC_a/b`
-In the following, features are defined for both lotteries indicated with $j\in\{A,B\}$.<br>
+The following defines features for both lotteries indicated with $j\in \{A,B \}$.<br>
 
 - <u>Log Variance (`ln_variance_a/b`):</u><br>
 $$log\Big ( 1+  \sum_{s=1}^{k_j} p_s^j(x_i^j)^2 -( \sum_{s=1}^{k_j} p_s^jx_s^j)^2 \Big)$$

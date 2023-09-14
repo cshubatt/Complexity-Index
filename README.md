@@ -12,7 +12,7 @@ Depending on the Input, the tool calculates these indices and saves them in the 
 
 
 ## Input 
-The code automatically recognizes the number of lotteries in the input data and therefore calculates either complexity indices of the choice problem and each lottery (see [subsection Choice Complexity](###Choice-Complexity) or just the complexity of the lottery if just one lottery is supplied (see [subsection Lottery Complexity](###Lottery-Complexity). 
+The code automatically recognizes the number of lotteries in the input data and therefore calculates either complexity indices of the choice problem and each lottery (see [subsection Choice Complexity](###choice-complexity) or just the complexity of the lottery if just one lottery is supplied (see [subsection Lottery Complexity](###lottery-complexity)). 
 - Max number of lotteries: 2
 - Max number of states per lottery: 7
 - Payout value is ignored if its probability is 0

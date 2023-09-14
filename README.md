@@ -12,7 +12,7 @@ Depending on the Input, the tool calculates these indices and saves them in the 
 
 
 ## Input 
-The code automatically recognizes the number of lotteries in the input data and therefore calculates either complexity indices of the choice problem and each lottery (see [subsection Choice Complexity](###choice-complexity) or just the complexity of the lottery if just one lottery is supplied (see [subsection Lottery Complexity](###lottery-complexity)). 
+The code automatically recognizes the number of lotteries in the input data and therefore calculates either complexity indices of the choice problem and each lottery (see [subsection Choice Complexity](#choice-complexity) or just the complexity of the lottery if just one lottery is supplied (see [subsection Lottery Complexity](#lottery-complexity)). 
 - Max number of lotteries: 2
 - Max number of states per lottery: 7
 - Payout value is ignored if its probability is 0
@@ -61,7 +61,7 @@ $$\frac{1}{2} \Big [ log \Big(1 +  1/k_A \sum_{s=1}^{k_A} |x_s^A| \Big) + log \B
 - <u>Average log number of states (`ave_ln_num_states_a`):</u><br>
 $$\frac{log(1 + k_A) + log(1 + k_B)}{2}$$
 - <u>Frac. lotteries involving loss (`frac_involves_losses`)</u><br>
-- <u>If one lottery in the choice is compound (according to definition [above](###Compound))</u><br>
+- <u>If one lottery in the choice is compound (according to definition [above](#Compound))</u><br>
 - <u>Absolute expected value difference (`abs_ev_diff`):</u><br>
 $$|EV(A) - EV(B)|$$
 - <u>Absolute expected value difference squared (`abs_ev_diff_sq`):</u><br>
@@ -71,7 +71,7 @@ $$|EV(A) - EV(B)|^2$$
 As above but without `abs_ev_diff` and `abs_ev_diff_sq` features.
 
 ### Lottery Complexity
-If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the [Choice Complexity](###ChoiceComplexity) output. However, payouts and probabilities are now named **x_1, x_2, ... p_1, p_2**. Additionally, the features and indices don't have the appendix `_a` as just one lottery is in the dataset.
+If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the [Choice Complexity](#Choice-Complexity) output. However, payouts and probabilities are now named **x_1, x_2, ... p_1, p_2**. Additionally, the features and indices don't have the appendix `_a` as just one lottery is in the dataset.
 
 #### Features of `OLC_a/b` and `SLC_a/b`
 The following defines features for both lotteries indicated with $j\in \{A,B \}$.<br>

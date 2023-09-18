@@ -49,7 +49,7 @@ local x_b_n = 0
 local p_b_n = 0
 
 *number of maximal states to insert 
-global num_st_max = 7
+global num_st_max = 9
 
 
 *Indicates which inidices can be calculated out of the supplied data
@@ -135,10 +135,10 @@ forval i = 1(1)$num_st_max{
 
 
 di "Check if a minimum number of two columns per lottery is in the data set"
-assert (`x_a_n' < 6) | (`x_b_n' < 6)
+assert (`x_a_n' < 8) | (`x_b_n' < 8)
 
-di "Created "`x_a_n' "additional columns to have in total 7 columns for states / probabilities in lottery A"
-di "Created "`x_b_n' "additional columns to have in total 7 columns for states / probabilities in lottery B"
+di "Created "`x_a_n' "additional columns to have in total 9 columns for states / probabilities in lottery A"
+di "Created "`x_b_n' "additional columns to have in total 9 columns for states / probabilities in lottery B"
 
 *--------------Checking if compound is in the data frame --------------* 
 

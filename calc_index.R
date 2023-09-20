@@ -224,7 +224,7 @@ old_names <- names(df)
 df <- compl$build_features(df)
 
 unpack_column <- function(
-    unpack_col, name_scheme, df, max_states = 7
+    unpack_col, name_scheme, df, max_states = 9
 ) {
   n <- nrow(df)
   mat <- matrix(0, nrow = n, ncol = max_states)

@@ -30,7 +30,7 @@ message("Loading features and response...")
 
 util <- modules::use("helpers/util.R")
 compl <- modules::use("helpers/complexity_feature_functions.R")
-df <- read.csv("sample_data/sample_just_OLC_SLC_calculation_1.csv")
+df <- read.csv("sample_data/sample_just_OLC_SLC_calculation_2.csv")
 
 #which indices will be calculated
 indices <- "PC"

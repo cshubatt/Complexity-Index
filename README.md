@@ -14,7 +14,7 @@ Depending on the Input, the tool calculates these indices and saves them in the 
 ## Input 
 The code automatically recognizes the number of lotteries in the input data and therefore calculates either complexity indices of the choice problem and each lottery (see [subsection Choice Complexity](#choice-complexity) or just the complexity of the lottery if just one lottery is supplied (see [subsection Lottery Complexity](#lottery-complexity)). 
 - Max number of lotteries: 2
-- Max number of states per lottery: 7
+- Max number of states per lottery: 9
 - Payout value is ignored if its probability is 0
 - Problem ID is optional and should be indicated by the column name `problem`.
 - CSV format 
@@ -22,7 +22,7 @@ The code automatically recognizes the number of lotteries in the input data and 
 - Additional columns can be in the input data and will not be manipulated by code, as long as it does not match the pattern `x_`, `p_`, `_a_`, `_a`, `_b_`, `_b` and `cor_`
 
 ### Choice Complexity
-If two lotteries are supplied, the column names should be as displayed in the table below. In the columns,*_a_*/*_b_* should indicate the two different lotteries and the number **i** payout x_a_**i** to probability p_a_**i** which can be up to **i = 7 ** (or fewer columns). Each state has to match a probability. Also, see sample `sample_all_indices_calculation_1.csv` or `sample_all_indices_calculation_2.csv` in the `sample_data` folder for an example of a correct input format.
+If two lotteries are supplied, the column names should be as displayed in the table below. The columns indicating payouts should take the form `x_{l}_{i}`, where $l \in \{a,b\}$ indicates which lottery the payout belongs to, and $i$ indexes the lottery states. Similarly, the column names indicating probabilities should take the form `p_{l}_{i}`. The state index $i$ should take values between 1 and $k_{\{l\}}$, where $k_{\{l\}}$ is the maximum number of states in any of the $l$ lotteries. As written, the code can process a maximum of $k_{\{l\}} = 9$ distinct states. If both lotteries take on a maximum of two states, then you would include the columns `x_a_1`, `x_a_2`, `p_a_1`, `p_a_2`, and similarly for $b$. See sample `sample_all_indices_calculation_1.csv` or `sample_all_indices_calculation_2.csv` in the `sample_data` folder for an example of a correct input format.
 
 | **[problem]** | **x_a_1** | **x_a_2** | **x_a_3** | **...** | **p_a_1** | **p_a_2** | **p_a_3** | **...** | **x_b_1** | **x_b_2** | **x_b_3** | **...** | **p_a_1** | **p_a_2** | **p_a_3** | **...** | **[compound]** | **Any** |
 |-------------|-----------|-----------|-----------|---------|-----------|:---------:|----------:|---------|-----------|-----------|-----------|---------|-----------|:---------:|----------:|---------|--------------|-------------------------|
@@ -32,15 +32,13 @@ If two lotteries are supplied, the column names should be as displayed in the ta
 
 
 ### Compound 
-An additional optional column can be used to indicate that any lottery is a compound lottery. However, we just used for estimating the complexity coefficients a specfic type of compound lotteries:
-HERE DESCRIPTION WHICH KIND OF COMPOUND LOTTERIES CAN BE INCORPORATED
+An additional optional column can be used to indicate that one of the lotteries is a compound lottery. However, we use a very specific type of compoundness in our estimation procedure. Specifically, we considered two-state lotteries where the probabilities `p_{l}_1` and `p_{l}_2` were not given explicitly to participants. Instead we told them that the probability of the first state $p$ would be drawn randomly from a uniform distribution on the interval $[p_{\min}, p_{\max}]$, and we varied the value of $p_{\min}$ and $p_{\max}$. The probability of the second state is then, of course, given by $1-p$. We allowed for at most one of the two options to have this type of compoundness. The compound indicator on which the complexity index model is trained *only* uses this definition of compoundness; we cannot speak to its robustness to alternative definitions. If you do not include `compound` in your column names, it will automatically be set to `False` for all problems.
 
 ### Lottery Complexity
-If Just one lottery is supplied, the column name of the lotteries can be either as displayed above or just **x_1, x_2, ... p_1, p_2** up to 7 states.  
-Also, see sample `sample_just_OLC_SLC_calculation_1.csv` or `sample_just_OLC_SLC_calculation_2.csv` in the `sample_data` folder for an example of a correct input format.
+If only one lottery is supplied, the lottery column names can be either as displayed above (using only the `_a_` columns and no `_b_` columns). Alternatively, the `_a_` segment may be omitted, in which case payoff columns will take the form `x_{i}` and probability columns will take the form `p_{i}`. Again, $i$ will range between 0 and $k$, the largest number of distinct states in any lottery; the code can handle a maximum value of $k = 9$. For an example of the correct input format, see `sample_just_OLC_SLC_calculation_1.csv` or `sample_just_OLC_SLC_calculation_2.csv` in the `sample_data` folder.
 
 ## Output
-The results are saved in `output` with `index_calculated_R.csv` or `index_calculated_stata.csv` respectively, including features which are necessary for the calculations. (Additionally `.RData` and `.dta`, are saved, depending on the executed script).
+The results will be saved in `output` with `index_calculated_R.csv` or `index_calculated_stata.csv` depending on which script you run, including features which are necessary for the calculations. (Additionally `.RData` and `.dta`, are saved, depending on the executed script).
 
 ### Choice Complexity
 If two lotteries are supplied as above, all 6 indices are automatically calculated. The results are ordered in the CSV as follows: Problem [Optional] | Supplied probabilities and payouts | OPC | SPC | OAC | SAC | OLC_a | SLC_a |  OLC_a | SLC_a | then in the same order of the indices the necessary features for their calculations| and in the end any other columns which were also in the input data but not used by the code |. _a, _b of for OLC and SLC indicates to which lottery the lottery complexity index is referring. `compound` is optional. 

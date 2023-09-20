@@ -52,7 +52,7 @@ df[, numeric_columns] <- lapply(df[, numeric_columns], as.numeric)
 df_fundamentals <- df
 
 #max numer of states
-num_st_max <- 7
+num_st_max <- 9
 
 message("Checking if more than one lotterie in the data set is supplied 
         in order to calculated choice complexity indices too (OPC/SPC/OAC/SAC)")
@@ -224,7 +224,7 @@ old_names <- names(df)
 df <- compl$build_features(df)
 
 unpack_column <- function(
-    unpack_col, name_scheme, df, max_states = 7
+    unpack_col, name_scheme, df, max_states = 9
 ) {
   n <- nrow(df)
   mat <- matrix(0, nrow = n, ncol = max_states)

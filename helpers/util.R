@@ -48,7 +48,7 @@ tidy_plus <- function(fit, var_labels = NA, alt_names = c("Variable", "Estimate"
 }
 
 unpack_column <- function(
-    unpack_col, name_scheme, df, ncol = 7
+    unpack_col, name_scheme, df, ncol = 9
 ){
   n <- nrow(df)
   mat <- matrix(NA, nrow = n, ncol = ncol)
@@ -64,7 +64,7 @@ unpack_column <- function(
 
 # Repack payoffs/probabilities from wide to long
 repack_column <- function(
-    repacked_col, name_scheme, df, ncol = 7
+    repacked_col, name_scheme, df, ncol = 9
 ) {
   df <- df %>%
     mutate(

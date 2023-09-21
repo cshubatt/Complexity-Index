@@ -69,11 +69,9 @@ $$|EV(A) - EV(B)|^2$$
 As above but without `abs_ev_diff` and `abs_ev_diff_sq` features.
 
 ### Lottery Complexity
-<<<<<<< HEAD
-If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the [Choice Complexity](###Choice-Complexity) output. However, payouts and probabilities are now named **x_1, x_2, ... p_1, p_2**. Additionally, the features and indices don't have the appendix `_a` as just one lottery is in the dataset.
-=======
+
 If  just one lottery is supplied the lottery complexity is calculated (OLC/SLC). In principle, the ordering of the output is the same as for the [Choice Complexity](#Choice-Complexity) output. However, payouts and probabilities are now named **x_1, x_2, ... p_1, p_2**. Additionally, the features and indices don't have the appendix `_a` as just one lottery is in the dataset.
->>>>>>> origin/main
+
 
 #### Features of `OLC_a/b` and `SLC_a/b`
 The following defines features for both lotteries indicated with $j\in \{A,B \}$.<br>

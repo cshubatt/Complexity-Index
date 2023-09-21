@@ -1,6 +1,6 @@
 # Complexity-Index
 
-Exploring the role of complexity for reasoning in choice problems. Provided are R (`calc_index.R`) and Stata (`calc_index.do`) files to calculate complexity indices from [Quantifying Lottery Choice Complexity (Enke & Shubatt 2023)](https://benjamin-enke.com/pdf/Quant_complexity.pdf):
+Provided are R (`calc_index.R`) and Stata (`calc_index.do`) files to calculate complexity indices from [Quantifying Lottery Choice Complexity (Enke & Shubatt 2023)](https://benjamin-enke.com/pdf/Quant_complexity.pdf):
 - **OPC**: Objective Problem Complexity
 - **SPC**: Subjective Problem Complexity
 - **OAC**: Objective Aggregation Complexity

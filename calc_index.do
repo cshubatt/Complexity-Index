@@ -32,7 +32,7 @@ frame create index_df
 frame change index_df
 
 *--------------Loading Data--------------* 
-import delimited "$root/sample_data/sample_just_OLC_SLC_calculation_2.csv", clear
+import delimited "$root/sample_data/sample_all_indices_calculation_1.csv", clear
 
 
 
@@ -588,7 +588,7 @@ else{
 	rename ave_ln_scale ave_ln_payout_magn
 	rename ln_scale_a ln_payout_magn_a
 	rename ln_scale_b ln_payout_magn_b
-	rename ave_ln_nstates ave_ln_num_states_a
+	rename ave_ln_nstates ave_ln_num_states
 	rename ln_nstates_a ln_num_states_a
 	rename ln_nstates_b ln_num_states_b
 	rename ave_not_gains frac_involves_losses

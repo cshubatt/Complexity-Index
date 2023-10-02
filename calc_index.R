@@ -30,7 +30,7 @@ message("Loading features and response...")
 
 util <- modules::use("helpers/util.R")
 compl <- modules::use("helpers/complexity_feature_functions.R")
-df <- read.csv("sample_data/sample_just_OLC_SLC_calculation_2.csv")
+df <- read.csv("sample_data/sample_all_indices_calculation_1.csv")
 
 #which indices will be calculated
 indices <- "PC"
@@ -146,7 +146,6 @@ df_compound <- data.frame()
 if("compound" %in% names(df)){
   compound <- TRUE
   df_compound <- df %>% select(compound)
-  other_columns
 }
 
 df <- df %>% 
@@ -407,7 +406,7 @@ if (indices == "LC"){
       ave_ln_payout_magn = ave_ln_scale,
       ln_payout_magn_a = ln_scale_a,
       ln_payout_magn_b = ln_scale_b,
-      ave_ln_num_states_a = ave_ln_nstates,
+      ave_ln_num_states = ave_ln_nstates,
       ln_num_states_a = ln_nstates_a,
       ln_num_states_b = ln_nstates_b,
       frac_involves_losses = ave_not_gains,

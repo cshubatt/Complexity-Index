@@ -16,6 +16,7 @@ The code automatically recognizes the number of lotteries in the input data and 
 - Max number of lotteries: 2
 - Max number of states per lottery: 9
 - Payout value is ignored if its probability is 0
+- Payouts must be distinct in each lottery
 - Problem ID is optional and should be indicated by the column name `problem`.
 - CSV format 
 - Not existing probabilities and states can be indicated by `,"",`, `,"NA",` or `,,` 

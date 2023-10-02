@@ -189,6 +189,13 @@ correlate_states <- function(x_a, x_b, p_a, p_b, ...) {
     
     a_better <- filter(a_df, cdf >= cdf_i)
     b_better <- filter(b_df, cdf >= cdf_i)
+    if(length(a_better$x) == 0 || length(b_better$x) == 0){
+      print("most likely there is a lottery where probabilities are not positive
+            or do not sum up to 1")
+      print(a_better)
+      print(b_better)
+      print(cdf_vals)
+    }
     assert(length(a_better$x) > 0 & length(b_better$x) > 0)
     assert(!(any(is.na(a_better$x))) & !(any(is.na(a_better$x))))
     

@@ -330,7 +330,7 @@ num_states <- function(xs){
   if(all(is.na(xs))){
     return(NA)
   }
-  num_states <- length(unique(xs))
+  num_states <- length(xs)
   return(num_states)
 }
 

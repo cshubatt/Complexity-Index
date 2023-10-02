@@ -16,14 +16,14 @@ The code automatically recognizes the number of lotteries in the input data and 
 - Max number of lotteries: 2
 - Max number of states per lottery: 9
 - Payout value is ignored if its probability is 0
-- Payouts must be distinct in each lottery
+- Payouts should be distinct in each lottery
 - Problem ID is optional and should be indicated by the column name `problem`.
 - CSV format 
 - Not existing probabilities and states can be indicated by `,"",`, `,"NA",` or `,,` 
 - Additional columns can be in the input data and will not be manipulated by code, as long as it does not match the pattern `x_`, `p_`, `_a_`, `_a`, `_b_`, `_b` and `cor_`
 
 ### Choice Complexity
-If two lotteries are supplied, the column names should be as displayed in the table below. The columns indicating payouts should take the form `x_{l}_{i}`, where $l \in \{a,b\}$ indicates which lottery the payout belongs to, and $i$ indexes the lottery states. Similarly, the column names indicating probabilities should take the form `p_{l}_{i}`. The state index $i$ should take values between 1 and $k_{\{l\}}$, where $k_{\{l\}}$ is the maximum number of states in any of the $l$ lotteries. As written, the code can process a maximum of $k_{\{l\}} = 9$ distinct states. If both lotteries take on a maximum of two states, then you would include the columns `x_a_1`, `x_a_2`, `p_a_1`, `p_a_2`, and similarly for $b$. See sample `sample_all_indices_calculation_1.csv` or `sample_all_indices_calculation_2.csv` in the `sample_data` folder for an example of a correct input format.
+If two lotteries are supplied, the column names should be as displayed in the table below. The columns indicating payouts should take the form `x_{l}_{i}`, where $l \in \{a,b\}$ indicates which lottery the payout belongs to, and $i$ indexes the lottery states. Similarly, the column names indicating probabilities should take the form `p_{l}_{i}`. The state index $i$ should take values between 1 and $k_{\{l\}}$, where $k_{\{l\}}$ is the maximum number of states in any of the $l$ lotteries. As written, the code can process a maximum of $k_{\{l\}} = 9$ distinct states.  If a payout is repeated in a lottery, they will be treated as separate states. To calculate the complexity-indices in [(Enke & Shubatt 2023)](https://benjamin-enke.com/pdf/Quant_complexity), we always first collapsed problems to treat same payouts as same state. If both lotteries take on a maximum of two states, then you would include the columns `x_a_1`, `x_a_2`, `p_a_1`, `p_a_2`, and similarly for $b$. See sample `sample_all_indices_calculation_1.csv` or `sample_all_indices_calculation_2.csv` in the `sample_data` folder for an example of a correct input format.
 
 | **[problem]** | **x_a_1** | **x_a_2** | **x_a_3** | **...** | **p_a_1** | **p_a_2** | **p_a_3** | **...** | **x_b_1** | **x_b_2** | **x_b_3** | **...** | **p_a_1** | **p_a_2** | **p_a_3** | **...** | **[compound]** | **Any** |
 |-------------|-----------|-----------|-----------|---------|-----------|:---------:|----------:|---------|-----------|-----------|-----------|---------|-----------|:---------:|----------:|---------|--------------|-------------------------|

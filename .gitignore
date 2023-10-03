@@ -5,4 +5,5 @@ testing/
 .Rprofile
 .gitgnore
 *.stswp
-output
+output/*
+!output/.gitkeep 

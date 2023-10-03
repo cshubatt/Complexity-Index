@@ -1,4 +1,3 @@
-somefolder/*
 testing/
 .DS_Store
 .Rapp.history
@@ -6,3 +5,4 @@ testing/
 .Rprofile
 .gitgnore
 *.stswp
+output

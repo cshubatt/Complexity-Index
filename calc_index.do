@@ -594,7 +594,7 @@ else{
 	rename ave_not_gains frac_involves_losses
 	rename not_gains_a involves_loss_a
 	rename not_gains_b involves_loss_b
-	rename nodom no_dominace
+	rename nodom no_dominance
 }
 
 

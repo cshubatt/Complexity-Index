@@ -412,7 +412,7 @@ if (indices == "LC"){
       frac_involves_losses = ave_not_gains,
       involves_loss_a = not_gains_a,
       involves_loss_b = not_gains_b,
-      no_dominace = nodom
+      no_dominance = nodom
     ) 
 }
 

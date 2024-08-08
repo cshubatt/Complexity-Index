@@ -4,13 +4,12 @@
 ****   Output:       CSV with problems, features and complexity index.                       *
 ****   Notes:        -                                                                       *
 ****   Author:       Sebastian Redl                                                          *
-****   Last updated: 25 Aug, 2024.                                                           * 
+****   Last updated: 01 Aug, 2024.                                                           * 
 **********************************************************************************************
 
 
 *SET WORKING DIRECTORY HERE:
-global root "/Users/sebastianredl/Dropbox (Harvard University)/ML_complexity/Complexity_Tool"
-
+global root "/Users/benjaminenke/Dropbox/Research/Projects/ML_complexity/Complexity_Tool"
 
 *--------------Install Packages --------------* 
 
@@ -32,9 +31,13 @@ frame create index_df
 frame change index_df
 
 *--------------Loading Data--------------* 
-import delimited "$root/sample_data/sample_all_indices_calculation_1.csv", clear
+import delimited "$root/sample_data/jpe_randomization.csv", clear
+/* import delimited "$root/sample_data/sample_all_indices_calculation_1.csv", clear */
+/* import delimited "$root/sample_data/sample_just_OLC_SLC_calculation_1.csv", clear */
 
-
+// List all variables in the dataset and save them in a local macro
+ds
+local initial_vars `r(varlist)'
 
 qui: destring *, ignore("NA") replace
 
@@ -52,23 +55,21 @@ local p_b_n = 0
 global num_st_max = 9
 
 
-*Indicates which inidices can be calculated out of the supplied data
-global indices_sel PC
-
-
+* Initialize global variable for single_lottery
+global single_lottery "false"
 
 
 capture describe x_* p_*
 
 	if (_rc == 0){
-		di "Checking if more than one lotterie in the data set in order to calculate OPC/SPC/OAC/SAC"
+		di "Checking if more than one lotterie in the data set in order to calculate OCI/SCI/OAC/SAC"
 		capture describe x_a_* p_a_* x_b_* p_b_*
 		if (_rc == 0){
 			di "Two lotteries per problem found!"
 		}
 		else{
-			di "Just one lottery found. Only OLC/SLC can be calculated"
-			global indices_sel LC
+			di "Just one lottery found. Only OLCI/SLCI can be calculated"
+			global single_lottery "true"
 			forval i = 1(1)$num_st_max{
 			*transfrom data set in the x_a_ and x_b format! 
 				capture confirm variable x_`i'
@@ -82,9 +83,8 @@ capture describe x_* p_*
 		}
 	}
 	else{
-		di "Not even one lottery to calculate just OLC/SLC with x_* and p_* entered"
+		di "Not even one lottery to calculate just OLCI/SLCI with x_* and p_* entered"
 		assert _rc != 0
-		
 	}
 
 
@@ -127,7 +127,7 @@ forval i = 1(1)$num_st_max{
 	
 
 	
-	di "Ceck if payout and probabilities match in data set for each lottery:"
+	di "Check if payout and probabilities match in data set for each lottery:"
 	assert p_a_`i' == x_a_`i' if missing(p_a_`i') |  missing(x_a_`i')
 	assert p_b_`i' == x_b_`i' if missing(p_b_`i') | missing(x_b_`i')
 }
@@ -156,13 +156,25 @@ else{
 			}
 }
 
-	
-
-
 *-----------------------------------------------------------
 *                    Build Features 
 *-----------------------------------------------------------
 
+*--------------Expected values--------------* 
+
+gen double ev__a = 0
+gen double ev__b = 0 
+
+forval i = 1(1)$num_st_max{
+	replace ev__a = ev__a + x_a_`i' * p_a_`i' if !missing(x_a_`i') & !missing(p_a_`i' )	
+	replace ev__b = ev__b + x_b_`i' * p_b_`i' if !missing(x_b_`i') & !missing(p_b_`i' )		
+}
+
+* Check if single_lottery is true and make adjustments if needed
+if "$single_lottery" == "true" {
+	replace ev__b = ev__a
+	replace x_b_1 = ev__a
+}
 
 *--------------Bring lotteries in correlated space--------------* 
 
@@ -274,51 +286,20 @@ forval row = 1(1)`N'{
 		qui replace cor_p_ab_`i' = cond(id == `row', p_ab_cor_st[`i',1], cor_p_ab_`i')
 	}
 	
-	di "Correllated states: (`row'/`N')"
-
+	di "Correlated states: (`row'/`N')"
 }
-
-
-*--------------Expected values--------------* 
-
-gen double ev_a = 0
-gen double ev_b = 0 
-
-forval i = 1(1)$num_st_max{
-	replace ev_a = ev_a + x_a_`i' * p_a_`i' if !missing(x_a_`i') & !missing(p_a_`i' )	
-	replace ev_b = ev_b + x_b_`i' * p_b_`i' if !missing(x_b_`i') & !missing(p_b_`i' )		
-}
-
 
 *--------------Excess Dissimilarity--------------* 
 
-gen double ln_cdf_diff_abs = 0
+gen double ln_cdf_diff_abs__ab = 0
 
 forval i = 1(1)$num_corr{
-	replace ln_cdf_diff_abs =  ln_cdf_diff_abs + abs(cor_x_a_`i' - cor_x_b_`i') * ///
+	replace ln_cdf_diff_abs__ab =  ln_cdf_diff_abs__ab + abs(cor_x_a_`i' - cor_x_b_`i') * ///
 	cor_p_ab_`i' if !missing(cor_x_a_`i') & !missing(cor_x_b_`i') & !missing(cor_p_ab_`i')
 }
 
 
-replace ln_cdf_diff_abs = ln(ln_cdf_diff_abs - abs(ev_a - ev_b) + 1)
-
-
-*--------------No Dominance--------------* 
-
-gen aGb = 1
-gen bGa = 1
-forval i = 1(1)$num_corr{
-	replace aGb = 0 if (cor_x_a_`i' < cor_x_b_`i') ///
-	& (!missing(cor_x_b_`i') & !missing(cor_x_a_`i'))
-	replace bGa = 0 if (cor_x_b_`i' < cor_x_a_`i') ///
-	& (!missing(cor_x_b_`i') & !missing(cor_x_a_`i'))
-}
-
-gen nodom = cond((bGa > aGb | bGa < aGb), 0, 1)
-
-
-drop aGb bGa
-
+replace ln_cdf_diff_abs__ab = ln(ln_cdf_diff_abs__ab - abs(ev__a - ev__b) + 1)
 
 *--------------Gains --------------* 
 
@@ -329,11 +310,8 @@ forval i = 1(1)$num_st_max{
 	replace gains_b = cond((gains_b == 1 ) & (x_b_`i' >= 0 ), 1, 0) if !missing(x_b_`i')
 }
 
-gen double not_gains_a = 1 - gains_a
-gen double not_gains_b = 1 - gains_b
-gen double ave_not_gains = 1 - (gains_a + gains_b) / 2
+gen double ave_gains__ab = (gains_a + gains_b) / 2
 drop gains_a gains_b
-
 
 *--------------Average log payout magnitude--------------* 
 
@@ -352,72 +330,41 @@ forval i = 1(1)$num_st_max{
 replace ln_scale_a = ln(1 + ln_scale_a / n_a)
 replace ln_scale_b = ln(1 + ln_scale_b / n_b)
 
-gen double ave_ln_scale = (ln_scale_a + ln_scale_b) / 2
+gen double ave_ln_scale__ab = (ln_scale_a + ln_scale_b) / 2
 
-
-*--------------log number of states--------------* 
+*--------------Average log number of states--------------* 
 
 gen double ln_nstates_a = ln(n_a + 1)
 gen double ln_nstates_b = ln(n_b + 1)
-gen double ave_ln_nstates = (ln_nstates_a + ln_nstates_b) /2
+gen double ave_ln_nstates__ab = (ln_nstates_a + ln_nstates_b) / 2
 drop n_a n_b
 
 
-*--------------Absolut expected value difference --------------* 
+*--------------Absolute expected value difference --------------* 
 
-gen double abs_ev_diff = abs(ev_a - ev_b)
+gen double abs_ev_diff__ab = abs(ev__a - ev__b)
 
+gen double ln_abs_ev_diff__ab = ln(1 + abs_ev_diff__ab)
 
-*--------------Squared absolut expected value difference --------------* 
-
-gen double abs_ev_diff_sq = abs_ev_diff^2
-
-*--------------Log Variance --------------* 
-
-
-gen double ln_var_a = 0
-gen double ln_var_b = 0
-
-forval i = 1(1)$num_st_max{
-	replace ln_var_a = ln_var_a + (x_a_`i' * x_a_`i') * p_a_`i'  if ///
-	!missing(p_a_`i') & !missing(x_a_`i')
-	replace ln_var_b = ln_var_b + (x_b_`i' * x_b_`i') * p_b_`i' if ///
-	!missing(p_b_`i') & !missing(x_b_`i')
-	
-}
-	
-replace ln_var_a = ln(ln_var_a - ev_a^2 + 1)
-replace ln_var_b = ln(ln_var_b - ev_b^2 + 1)
-
-drop ev_a ev_b
+drop ev__a ev__b abs_ev_diff__ab
 
 count
 global obs_n = r(N)
-
 
 *-----------------------------------------------------------
 *                    Calculate Indices
 *-----------------------------------------------------------
 
 *features problems complexity indices
-local features_pc abs_ev_diff abs_ev_diff_sq ave_ln_scale ave_ln_nstates ///
-                 compound nodom ave_not_gains ln_cdf_diff_abs 
+local features_ci ln_abs_ev_diff__ab ave_ln_scale__ab ///
+								 ave_ln_nstates__ab compound ave_gains__ab ln_cdf_diff_abs__ab
 
 *features aggregation complexity indices
-local features_ac ave_ln_scale ave_ln_nstates ///
-                 compound nodom ave_not_gains ln_cdf_diff_abs 
-
-*features lottery complexity of lottery A				 
-local features_lc_a ln_scale_a ln_nstates_a compound not_gains_a  ln_var_a
-
-*features lottery complexity of lottery B
-local features_lc_b  ln_scale_b ln_nstates_b compound not_gains_b ln_var_b
+local features_ac ave_ln_scale__ab ave_ln_nstates__ab compound ave_gains__ab ///
+									ln_cdf_diff_abs__ab
 
 *Indices to calculate
-local indices OPC SPC OAC SAC OLC_a OLC_b SLC_a SLC_b
-if ("$indices_sel" == "LC"){
-	local indices OLC_a SLC_a
-}
+local indices OCI SCI OAC SAC
 
 *import coefficients
 frame create coef
@@ -430,16 +377,15 @@ destring, replace
 *combination
 foreach index in `indices'{
 di "`index'"
-*local index OLC_a
 local indices_name `index'
 
-	if("`index'" == "OPC"){
-		local features_used `features_pc'
-		local indices_name opc
+	if("`index'" == "OCI"){
+		local features_used `features_ci'
+		local indices_name oci
 	}
-	if("`index'" == "SPC"){
-		local features_used `features_pc'
-		local indices_name spc
+	if("`index'" == "SCI"){
+		local features_used `features_ci'
+		local indices_name sci
 	}
 	if("`index'" == "OAC"){
 		local features_used `features_ac'
@@ -448,22 +394,6 @@ local indices_name `index'
 	if("`index'" == "SAC"){
 		local features_used `features_ac'
 		local indices_name sac
-	}
-	if("`index'" == "OLC_a"){
-		local features_used `features_lc_a'
-		local indices_name olc
-	}
-	if("`index'" == "OLC_b"){
-		local features_used `features_lc_b'
-		local indices_name olc
-	}
-	if("`index'" == "SLC_a"){
-		local features_used `features_lc_a'
-		local indices_name slc
-	}
-	if("`index'" == "SLC_b"){
-		local features_used `features_lc_b'
-		local indices_name slc
 	}
 	
 	frame change coef
@@ -479,7 +409,6 @@ local indices_name `index'
 	rename (_cons_`index') (constant_`index') 
 	expand $obs_n
 	replace id = _n
-
 
 	*Merge all feature coefficients to lottery dataframe
 	frame change index_df
@@ -499,129 +428,72 @@ local indices_name `index'
 		local varind = "`var'_`index'"
 		di "`varind'"
 		di "`index'"
-		*for OLC_b and SLC_B use OLC_a and SLC_a lottery coeffients
-		*as they are for each lottery the same
-		if (("`index'" == "OLC_b" )| ("`index'" == "SLC_b")){
-			if ("`var'" != "compound"){
-			local varind = substr("`var'", 1, length("`var'") - 1)
-			local varind = "`varind'a_`index'"
-			}
-		}
+
 		replace `index' = ( `varind' ) * ( `var' ) + `index'  if !missing(`var')
 		
 	}
 	*winsorize index at 0
 	replace `index' = 0 if `index' < 0
+
+	if("`index'" == "OCI"){
+		replace `index' = 0.5 if `index' > 0.5
+	}
+	if("`index'" == "SCI"){
+		replace `index' = 0.5 if `index' > 0.5
+	}
+
 	*drop coefficients from the dataframe
 	drop *_`index'
-
 }
 
+*---------------Labeling variables----------------------*
 
-
-*---------------Labeling drop variables----------------------*
-
-label var compound "1 if compound prob."
-label var abs_ev_diff "Absolute difference in expected values"
-label var abs_ev_diff_sq "Absolute difference in expected values sq."
-label var ln_cdf_diff_abs "Log excess dissimilarity"
-label var ave_ln_scale "Average log payout magnitude"
-label var ave_ln_nstates "Average log number of states"
-label var ave_not_gains "Fraction of lotteries involving loss"
-label var nodom "No dominance relationship"
-
-order x_a* p_a* x_b* p_b* `indices' `features_pc' `features_ac' `features_lc_a' ///
- `features_lc_b'
+order x_a* p_a* x_b* p_b* `indices' 
 capture confirm variable problem 
 if (_rc ==0){
-	order problem x_a* p_a* x_b* p_b* `indices' `features_pc' `features_ac' `features_lc_a' ///
- `features_lc_b'
+	order problem x_a* p_a* x_b* p_b* `indices'
 	label var problem "Problem ID"
 }
 
 
-if ("$indices_sel" == "LC"){
-	drop `features_pc' `features_ac' `features_lc_b' cor_* x_b* p_b* id
-	local keep_features x_a* p_a_* `indices' `features_lc_a'
-	label var OLC_a "Objective Lottery Complexity"
-	label var SLC_a "Subjective Lottery Complexity"
-	label var ln_var_a "Log variance"
-	label var ln_scale_a "Log payout magnitude"
-	label var ln_nstates_a "Log number of states"
-	label var not_gains_a "1 if involves loss"
+if "$single_lottery" == "true"{
+	drop x_b* p_b* id
+	local keep_features `initial_vars' OLCI SLCI
+	rename OCI OLCI
+	rename SCI SLCI
+	label var OLCI "Objective Lottery Complexity"
+	label var SLCI "Subjective Lottery Complexity"
 	forval i = 1(1)$num_st_max{
 	label var x_a_`i' "Payout of state `i'"
 	label var p_a_`i' "Probability for state `i'"
 	}
-	rename ln_var_a ln_variance_a
-	rename ln_scale_a ln_payout_magn_a
-	rename ln_nstates_a ln_num_states_a
-	rename not_gains_a involves_loss_a
 }
 else{
-	drop cor_* id
-	label var OPC "Objective Problem Complexity"
-	label var SPC "Subjective Problem Complexity"
+	local keep_features `initial_vars' OCI SCI OAC SAC
+	label var OCI "Objective Problem Complexity"
+	label var SCI "Subjective Problem Complexity"
 	label var OAC "Objective Aggregation Complexity"
 	label var SAC "Subjective Aggregation Complexity"
-	label var OLC_a "Objective Lottery Complexity of Lottery A"
-	label var SLC_a "Subjective Lottery Complexity of Lottery A"
-	label var OLC_b "Objective Lottery Complexity of Lottery B"
-	label var SLC_b "Subjective Lottery Complexity of Lottery B"
-	label var ln_var_a "Log variance of Lottery A"
-	label var ln_scale_a "Log payout magnitude of Lottery A"
-	label var ln_nstates_a "Log number of states of Lottery A"
-	label var not_gains_a "1 if involves loss of Lottery A"
-	label var ln_var_b "Log variance of Lottery B"
-	label var ln_scale_b "Log payout magnitude of Lottery B"
-	label var ln_nstates_b "Log number of states of Lottery B"
-	label var not_gains_b "1 if involves loss of Lottery B"
 	foreach lot in a b{
 		forval i = 1(1)$num_st_max{
 			label var x_`lot'_`i' "Lottery `lot' payout of state `i'"
 			label var p_`lot'_`i' "Lottery `lot' probability for state `i'"
 		}
 	}
-	rename ln_cdf_diff_abs ln_excess_dissimilarity
-	rename ln_var_a ln_variance_a
-	rename ln_var_b ln_variance_b
-	rename ave_ln_scale ave_ln_payout_magn
-	rename ln_scale_a ln_payout_magn_a
-	rename ln_scale_b ln_payout_magn_b
-	rename ave_ln_nstates ave_ln_num_states
-	rename ln_nstates_a ln_num_states_a
-	rename ln_nstates_b ln_num_states_b
-	rename ave_not_gains frac_involves_losses
-	rename not_gains_a involves_loss_a
-	rename not_gains_b involves_loss_b
-	rename nodom no_dominance
 }
 
-
-*drop added states and probabilities with just NA
-
-foreach var of varlist _all {
-     capture assert mi(`var')
-     if !_rc {
-        drop `var'
-     }
- }
- 
 capture assert compound == 0
-if _rc == 0 drop compound
  
-if ("$indices_sel" == "LC"){
+if ("$single_lottery" == "true"){
 	rename *_a *
 	rename *_a_* *_*
 }
-else{
-
-}
-
-
- 
  
 *-------------- Save dataframe --------------* 
+* keep only keep_features
+ds `keep_features', not
+drop `r(varlist)'
+order problem `keep_features'
 
 save "$root/output/index_calculated_stata.dta", replace
 export delimited "$root/output/index_calculated_stata.csv", replace
